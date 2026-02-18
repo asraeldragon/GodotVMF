@@ -10,11 +10,18 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**Provide `vmf.config.json` if you have one**
+**GodotVMF config**
+Open `project.godot` as text file and look for `[godot_vmf]` section. Copy everything till the next section.
 ```json
+
+```
+In case there's no such section - specify `[DEFAULT]`
+
+**Output log**
+```
 
 ```
 
 **Make sure you:**
 - [ ] Read relevant to your problem documentation
-- [ ] Paths in your vmf.config are OK
+- [ ] Paths in Project Settings -> GodotVMF are OK
