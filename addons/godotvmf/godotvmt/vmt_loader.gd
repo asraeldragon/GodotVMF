@@ -31,6 +31,14 @@ static func parse_transform(transform_data: String):
 		translate = translate,
 	}
 
+static func get_material_load_path(material: String) -> String:
+	var path_root = normalize_path(VMFConfig.materials.target_folder + "/" + material).to_lower();
+
+	if ResourceLoader.exists(path_root + ".tres"): return path_root + ".tres";
+	if ResourceLoader.exists(path_root + ".res"): return path_root + ".res";
+	if ResourceLoader.exists(path_root + ".vmt"): return path_root + ".vmt";
+	return "";
+
 static func load(path: String):
 	var structure = VDFParser.parse(path, true);
 
@@ -106,27 +114,15 @@ static func normalize_path(path: String) -> String:
 	return path.replace('\\', '/').replace('//', '/').replace('res:/', 'res://');
 
 static func has_material(material: String) -> bool:
-	var material_path = normalize_path(VMFConfig.materials.target_folder + "/" + material + ".tres").to_lower();
-
-	if not ResourceLoader.exists(material_path):
-		material_path = material_path.replace(".tres", ".vmt");
-
-	if not ResourceLoader.exists(material_path):
-		return false;
-
-	return true;
+	return get_material_load_path(material) != "";
 
 static func get_material(material: String) -> Material:
 	var cached_material = VMFCache.get_cached(material);
 	if cached_material:
 		return cached_material as Material;
 
-	var material_path = normalize_path(VMFConfig.materials.target_folder + "/" + material + ".tres").to_lower();
-
-	if not ResourceLoader.exists(material_path):
-		material_path = material_path.replace(".tres", ".vmt");
-
-	if not ResourceLoader.exists(material_path):
+	var material_path = get_material_load_path(material);
+	if material_path == "":
 		if not VMFCache.is_file_logged(material_path):
 			VMFLogger.warn("Material not found: " + material_path);
 			VMFCache.add_logged_file(material_path);
